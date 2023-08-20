@@ -2,16 +2,18 @@ package com.reyndev.theclock
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.reyndev.theclock.databinding.ActivityMainBinding
 import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.asCoroutineDispatcher
 import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
+import java.util.concurrent.Executor
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var handler: Handler
 
     private lateinit var calendar: GregorianCalendar
 
@@ -28,28 +30,18 @@ class MainActivity : AppCompatActivity() {
 
         calendar = GregorianCalendar()
 
-//        hour = calendar.get(Calendar.HOUR_OF_DAY)
-//        minute = calendar.get(Calendar.MINUTE)
-//        second = calendar.get(Calendar.SECOND)
-//
-//        binding.clockText.text = "${hour}:${minute}:${second}"
-
-        handler = Handler()
-        val r = object : Runnable {
+        Handler().post(object : Runnable {
             override fun run() {
-                runOnUiThread {
-                    calendar.time = Date()
+                calendar.time = Date()
 
-                    hour = calendar.get(Calendar.HOUR_OF_DAY)
-                    minute = calendar.get(Calendar.MINUTE)
-                    second = calendar.get(Calendar.SECOND)
+                hour = calendar.get(Calendar.HOUR_OF_DAY)
+                minute = calendar.get(Calendar.MINUTE)
+                second = calendar.get(Calendar.SECOND)
 
-                    binding.clockText.text = "${hour}:${minute}:${second}"
+                binding.clockText.text = "${hour}:${minute}:${second}"
 
-                    handler.postDelayed(this, 1000)
-                }
+                Handler().postDelayed(this, 500)
             }
-        }
-        handler.post(r)
+        })
     }
 }
